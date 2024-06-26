@@ -111,6 +111,24 @@ async function registrar() {
     }
 }
 
+async function validarUsuario(usuario) {
+    var myHeaders = new Headers();
+    var status = false;
+    try {
+        const response = await fetch("https://iquimia-production.up.railway.app/login", opciones("GET", myHeaders));
+        const result = await response.json();
+        for (let index = 0; index < result.length; index++) {
+            if (result[index].usuario == usuario) {
+                status = true;
+                break;
+            }
+        }
+    } catch (error) {
+        console.log('error', error);
+    }
+    return status;
+}
+
 elegirOpc2($select2);
 
 function elegirOpc2(opc) {
