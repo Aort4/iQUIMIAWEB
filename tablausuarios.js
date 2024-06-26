@@ -68,18 +68,24 @@ function eliminarUser() {
 
 async function registrar() {
     try {
-        const usuario = document.querySelector("#Usuario1").value;
-        const contraseña = document.querySelector("#Contraseña1").value;
+        const usuario = document.getElementById('Usuario1').value;
+        const contraseña = document.getElementById('Contraseña1').value;
+
+        // Validar que los campos no estén vacíos
+        if (usuario.trim() === '' || contraseña.trim() === '') {
+            window.alert("Por favor, ingrese usuario y contraseña válidos.");
+            return;
+        }
 
         // Encriptar la contraseña
-        const contraseñaEncriptada = CryptoJS.SHA256(contraseña).toString();
+        const Encriptada = CryptoJS.SHA256(contraseña).toString();
 
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
         var raw = JSON.stringify({
             "usuario": usuario,
-            "password": contraseñaEncriptada,
+            "password": Encriptada
         });
 
         var requestOptions = {
@@ -100,26 +106,9 @@ async function registrar() {
             window.alert("La persona posee una cuenta.");
         }
     } catch (error) {
-        window.alert("La persona ya posee una cuenta.");
+        console.error("Error durante el registro:", error);
+        window.alert("Error: " + error.message);
     }
-}
-
-async function validarUsuario(usuario) {
-    var myHeaders = new Headers();
-    var status = false;
-    try {
-        const response = await fetch("https://iquimia-production.up.railway.app/login", opciones("GET", myHeaders));
-        const result = await response.json();
-        for (let index = 0; index < result.length; index++) {
-            if (result[index].usuario == usuario) {
-                status = true;
-                break;
-            }
-        }
-    } catch (error) {
-        console.log('error', error);
-    }
-    return status;
 }
 
 elegirOpc2($select2);
@@ -134,6 +123,12 @@ function elegirOpc2(opc) {
 
 function actualiza() {
     const contraseña = document.querySelector("#Contraseña").value;
+
+    // Validar que el campo no esté vacío
+    if (contraseña.trim() === '') {
+        window.alert("Por favor, ingrese una contraseña válida.");
+        return;
+    }
 
     // Encriptar la contraseña
     const contraseñaEncriptada = CryptoJS.SHA256(contraseña).toString();
